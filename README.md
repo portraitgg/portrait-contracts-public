@@ -3,8 +3,7 @@ A public repo for the Portrait contracts
 
 These contracts are all licensed under the MIT License.
 
-The contracts are deployed on Base Sepolia. You can find the contract scan links for all the contracts below:
-
+The contracts are deployed on Base Sepolia. You can find the deployed contracts here:
 - Core Contracts
     - [PortraitIdRegistry](https://sepolia.basescan.org/address/0x3cDc03BEb79ba3b9FD3b687C67BFDE70AFf46eBF)
     - [PortraitNameRegistry](https://sepolia.basescan.org/address/0xc788716466009AD7219c78d8e547819f6092ec8F)

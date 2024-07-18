@@ -9,7 +9,7 @@ The contracts are deployed on Base Sepolia. You can find the deployed contracts 
     - [PortraitNameRegistry](https://sepolia.basescan.org/address/0xc788716466009AD7219c78d8e547819f6092ec8F)
     - [PortraitAccessRegistry](https://sepolia.basescan.org/address/0xa837e9C834f23b04061b901814Af872291883ee7)
     - [PortraitPlanRegistry](https://sepolia.basescan.org/address/0x630a0F43c1d51ABaf3a879cC79F844b6A03C3766)
-    - [PortraitNodeRegistry](https://sepolia.basescan.org/address/0xe7c8d2ed90f4d3Db6f65ff4f8471964bBC32eC60)
+    - [PortraitNodeRegistry](https://sepolia.basescan.org/address/0x935f45e99eA6EeFE4C86845C996e27630b31C5Bb)
     - [PortraitStateRegistry](https://sepolia.basescan.org/address/0x320C9E64c9a68492A1EB830e64EE881D75ac5efd)
 
 - Libraries and utils

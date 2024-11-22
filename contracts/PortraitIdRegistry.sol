@@ -14,7 +14,7 @@ import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/utils/U
 import {ReentrancyGuardUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/ReentrancyGuardUpgradeable.sol";
 
 /// @custom:security-contact ryan@portrait.gg
-contract PortraitIdRegistry is
+contract PortraitIdRegistryV2 is
     IPortraitIdRegistry,
     Initializable,
     ERC721Upgradeable,
@@ -31,7 +31,7 @@ contract PortraitIdRegistry is
 
     string public constant CONTRACT_NAME = "PortraitIdRegistry";
 
-    uint256 public constant VERSION = 1;
+    uint256 public constant VERSION = 2;
 
     /*//////////////////////////////////////////////////////////////
                                  VARIABLES
@@ -219,7 +219,7 @@ contract PortraitIdRegistry is
         uint256 portraitId,
         address from,
         address to
-    ) internal nonReentrant {
+    ) internal nonReentrant whenNotControlledRegistrationPeriod {
         // Validate if `from` is the owner; if not, set it to the actual owner
         if (from != portraitIdToOwner[portraitId]) {
             from = portraitIdToOwner[portraitId];
@@ -548,19 +548,26 @@ contract PortraitIdRegistry is
             ERC721EnumerableUpgradeable,
             ERC721PausableUpgradeable
         )
+        whenNotPaused
         returns (address)
     {
-        if (
-            !portraitAccessRegistry.isDelegateOrOwnerOfPortraitId(
-                tokenId,
-                msg.sender
-            )
-        ) revert Unauthorized();
+        address owner = _ownerOf(tokenId);
 
-        address previousOwner;
-        previousOwner = super._update(to, tokenId, auth);
+        // _isAuthorized is an internal function of ERC721Upgradeable, validating if the transaction initiator is the owner or an approved address.
+        if (!_isAuthorized(owner, msg.sender, tokenId)) {
+            if (
+                // If the transaction initiator is not the owner, check if the transaction initiator is a delegate or owner of the portraitId.
+                // Owner of Portrait ID doesn't mean the erc721 token is minted, thus the owner of the tokenId can be 0 address.
+                !portraitAccessRegistry.isDelegateOrOwnerOfPortraitId(
+                    tokenId,
+                    msg.sender
+                )
+            ) revert Unauthorized();
+        }
 
-        _transferPortraitId(tokenId, msg.sender, to);
+        address previousOwner = super._update(to, tokenId, auth);
+
+        _transferPortraitId(tokenId, owner, to);
         return previousOwner;
     }
 
@@ -660,7 +667,7 @@ contract PortraitIdRegistry is
 
         portraitIdCounter = 0;
         isControlledRegistrationPeriod = true;
-        baseURI = "https://token.portrait.gg";
+        baseURI = "https://token.portrait.so/";
 
         portraitContractRegistry = IPortraitContractRegistry(
             portraitContractRegistryAddress

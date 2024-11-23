@@ -17,7 +17,7 @@ The contracts are deployed on Base Sepolia. You can find the deployed contracts 
     - [UniversalSigValidator](https://sepolia.basescan.org/address/0xEE5542f87475A5F08d1450941c6a4470FbE7949E)
 
 - Payment Contracts
-- [PortraitPaymentReceiverBase.sol](https://basescan.org/address/0xa837e9C834f23b04061b901814Af872291883ee7)
-- [PortraitPlusRegistryBase.sol](https://basescan.org/address/0x2C2D1573B4AC04caa5eF1FC82e469173602F9cb2)
+    - [PortraitPaymentReceiverBase.sol](https://basescan.org/address/0xa837e9C834f23b04061b901814Af872291883ee7)
+    - [PortraitPlusRegistryBase.sol](https://basescan.org/address/0x2C2D1573B4AC04caa5eF1FC82e469173602F9cb2)
 
 Please note that Portrait is currently in beta and under active development. For more information, visit the official website at [portrait.so](https://portrait.so) or the learning portal at [learn.portrait.so](https://learn.portrait.so).

@@ -11,7 +11,7 @@ import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
 /// @custom:security-contact ryan@portrait.gg
-contract PortraitPlusRegistryBase is
+contract PortraitPlusRegistryBaseV3 is
     Initializable,
     PausableUpgradeable,
     OwnableUpgradeable,
@@ -264,8 +264,7 @@ contract PortraitPlusRegistryBase is
     ) external payable nonReentrant whenNotPaused {
         if (msg.value == 0) revert InsufficientPayment();
 
-        // Convert the ETH amount to 18-decimal USD using the latest ETH price
-        uint256 amountInUSD = (msg.value * getLatestETHPrice()) / 1e18;
+        uint256 amountInUSD = (msg.value * getLatestETHPrice()) / 1e26; // Divide by 1e18 * 1e8
 
         // Must be at least pricePerMonthInUSD
         if (amountInUSD < pricePerMonthInUSD) {
@@ -361,18 +360,15 @@ contract PortraitPlusRegistryBase is
     ) internal view returns (uint256 daysInTimestamp) {
         uint256 DAYS_PER_MONTH = 30 days;
 
-        // Adjust price per month to 18 decimals
-        uint256 pricePerMonth = pricePerMonthInUSD * 1e18;
+        // Use pricePerMonthInUSD directly
+        uint256 pricePerMonth = pricePerMonthInUSD;
 
-        // Calculate full months paid and any remaining USD with 18-decimal precision
+        // Calculate full months paid and any remaining USD
         uint256 fullMonthsPaid = usd / pricePerMonth;
         uint256 remainingUSD = usd % pricePerMonth;
 
-        // Add bonus months for every 12 full months paid
-        uint256 totalMonths = fullMonthsPaid + (fullMonthsPaid / 12);
-
         // Calculate days from full months
-        uint256 daysFromMonths = totalMonths * DAYS_PER_MONTH;
+        uint256 daysFromMonths = fullMonthsPaid * DAYS_PER_MONTH;
 
         // Calculate additional days for the remaining USD
         uint256 daysFromRemainingUSD = (remainingUSD * DAYS_PER_MONTH) /
@@ -516,6 +512,20 @@ contract PortraitPlusRegistryBase is
         uint256 balance = token.balanceOf(address(this));
 
         token.safeTransfer(recipient, balance);
+    }
+
+    /**
+     * @notice Allows the owner to set the expiry timestamp for a given Portrait ID.
+     * @param portraitId The ID of the portrait to update.
+     * @param newExpiryTimestamp The new expiry timestamp to set.
+     */
+    function setPortraitPlusExpiryTimestampAsOwner(
+        uint256 portraitId,
+        uint256 newExpiryTimestamp
+    ) external onlyOwner {
+        portraitIdToPortraitPlusExpiryTimestamp[
+            portraitId
+        ] = newExpiryTimestamp;
     }
 
     /**
